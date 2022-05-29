@@ -23,10 +23,6 @@ struct ContentView: View {
         return Calendar.current.date(from: components) ?? Date.now
     }
     
-    var calculatedBedTime: String {
-        calculateBedTime()
-    }
-    
     var body: some View {
         NavigationView {
             Form {
@@ -53,7 +49,7 @@ struct ContentView: View {
                     }
                 }
                 Section {
-                    Text("\(calculatedBedTime)")
+                    Text("\(calculateBedTime())")
                         .titleStyle()
                 } header: {
                     Text("You should go to sleep at")
@@ -74,11 +70,9 @@ struct ContentView: View {
             
             let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: sleepAmount, coffee: Double(coffeeAmount))
             let sleepTime = wakeUp - prediction.actualSleep
+            let date = sleepTime.formatted(date: .omitted, time: .shortened)
             
-            let formatter = DateFormatter()
-            formatter.timeStyle = .short
-            
-            return formatter.string(from: sleepTime)
+            return date
         } catch {
             return "Error"
         }
